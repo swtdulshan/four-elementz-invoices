@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EventPlan — Invoice Generator</title>
+  <title>Four Elementz Events — Invoice Generator</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.css">
   <style>
     :root{--accent:#2b6cb0;--muted:#6b7280}
@@ -39,7 +39,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EventPlan — Invoice Generator</h1>
+    <h1>Four Elementz Events — Invoice Generator</h1>
     <p class="muted">Create an invoice and download it as PDF. Designed for an event planning company — host this single file on GitHub Pages.</p>
 
     <div class="grid grid-2" style="margin-top:12px;gap:16px">
@@ -49,7 +49,6 @@
           <div style="flex:1;min-width:180px">
             <label>Company name</label>
             <input id="companyName" value="Four Elementz Events" />
-
           </div>
           <div style="min-width:140px">
             <label>Invoice #</label>
@@ -70,7 +69,7 @@
 
           <div style="width:220px">
             <label>Company Address</label>
-            <textarea id="companyAddress" rows="3">Pannipitiya,Colombo
+            <textarea id="companyAddress" rows="3">Pannipitiya, Colombo
 Phone: 0712871830
 Email: fourelementzevents@gmail.com</textarea>
           </div>
@@ -78,7 +77,7 @@ Email: fourelementzevents@gmail.com</textarea>
 
         <div style="margin-top:12px">
           <label>Notes (appears on invoice)</label>
-          <textarea id="notes" rows="3">Thank you for choosing EventPlan. Please pay within 14 days.</textarea>
+          <textarea id="notes" rows="3">Thank you for choosing Four Elementz Events. Please pay within 14 days.</textarea>
         </div>
 
         <section style="margin-top:12px">
@@ -114,21 +113,8 @@ Email: fourelementzevents@gmail.com</textarea>
         <div class="card">
           <h2 style="margin-top:0">Preview</h2>
           <div id="preview" class="invoice-preview small">
-            <!-- invoice preview rendered here -->
             <div style="text-align:center;opacity:0.65">Click "Show preview" to render the invoice here.</div>
           </div>
-        </div>
-
-        <div style="height:12px"></div>
-
-        <div class="card">
-          <h3 style="margin-top:0">Quick actions</h3>
-          <div class="controls">
-            <button id="saveJSON" class="btn ghost">Save JSON</button>
-            <button id="loadJSON" class="btn ghost">Load JSON</button>
-            <button id="resetForm" class="btn ghost">Reset</button>
-          </div>
-          <p class="muted small" style="margin-top:8px">Saved JSON will use localStorage in your browser (for sharing, copy the JSON text and paste into another browser).</p>
         </div>
       </aside>
     </div>
@@ -138,18 +124,13 @@ Email: fourelementzevents@gmail.com</textarea>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
-    // Basic invoice generator script
     const itemsBody = document.getElementById('itemsBody');
     const addItemBtn = document.getElementById('addItem');
     const clearItemsBtn = document.getElementById('clearItems');
     const previewBtn = document.getElementById('previewBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const previewDiv = document.getElementById('preview');
-    const saveJSONBtn = document.getElementById('saveJSON');
-    const loadJSONBtn = document.getElementById('loadJSON');
-    const resetFormBtn = document.getElementById('resetForm');
 
-    // default date to today
     document.getElementById('invoiceDate').valueAsDate = new Date();
 
     function createItemRow(item={desc:'Setup fee', qty:1, price:5000, tax:0}){
@@ -165,35 +146,32 @@ Email: fourelementzevents@gmail.com</textarea>
       itemsBody.appendChild(tr);
     }
 
-    function escapeHtml(s){return (s+'').replace(/[&<>"']/g, c=>({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function escapeHtml(s){return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
     addItemBtn.addEventListener('click', ()=>createItemRow({desc:'',qty:1,price:0,tax:0}));
     clearItemsBtn.addEventListener('click', ()=>{itemsBody.innerHTML='';});
 
-    // start with two sample rows
     createItemRow({desc:'Venue booking',qty:1,price:45000,tax:0});
     createItemRow({desc:'Decoration + Setup',qty:1,price:15000,tax:0});
 
     function readForm(){
-      const companyName = document.getElementById('companyName').value;
-      const companyAddress = document.getElementById('companyAddress').value;
-      const invoiceNo = document.getElementById('invoiceNo').value;
-      const invoiceDate = document.getElementById('invoiceDate').value;
-      const customerName = document.getElementById('customerName').value;
-      const customerAddress = document.getElementById('customerAddress').value;
-      const notes = document.getElementById('notes').value;
-      const discount = parseFloat(document.getElementById('discount').value)||0;
-      const currency = document.getElementById('currency').value;
-
-      const rows = Array.from(itemsBody.querySelectorAll('tr')).map(tr=>({
-        desc: tr.querySelector('.desc').value,
-        qty: parseFloat(tr.querySelector('.qty').value)||0,
-        price: parseFloat(tr.querySelector('.price').value)||0,
-        tax: parseFloat(tr.querySelector('.tax').value)||0,
-      }));
-
-      return {companyName,companyAddress,invoiceNo,invoiceDate,customerName,customerAddress,notes,discount,currency,rows};
+      return {
+        companyName: document.getElementById('companyName').value,
+        companyAddress: document.getElementById('companyAddress').value,
+        invoiceNo: document.getElementById('invoiceNo').value,
+        invoiceDate: document.getElementById('invoiceDate').value,
+        customerName: document.getElementById('customerName').value,
+        customerAddress: document.getElementById('customerAddress').value,
+        notes: document.getElementById('notes').value,
+        discount: parseFloat(document.getElementById('discount').value)||0,
+        currency: document.getElementById('currency').value,
+        rows: Array.from(itemsBody.querySelectorAll('tr')).map(tr=>({
+          desc: tr.querySelector('.desc').value,
+          qty: parseFloat(tr.querySelector('.qty').value)||0,
+          price: parseFloat(tr.querySelector('.price').value)||0,
+          tax: parseFloat(tr.querySelector('.tax').value)||0,
+        }))
+      };
     }
 
     function calcTotals(rows,discount){
@@ -224,9 +202,7 @@ Email: fourelementzevents@gmail.com</textarea>
             <div class="invoice-meta">No: ${escapeHtml(data.invoiceNo)}<br/>Date: ${escapeHtml(data.invoiceDate)}</div>
           </div>
         </div>
-
         <hr style="margin:12px 0"/>
-
         <div style="display:flex;justify-content:space-between;padding:6px 0">
           <div>
             <div class="small muted">Bill to</div>
@@ -238,19 +214,16 @@ Email: fourelementzevents@gmail.com</textarea>
             <div style="font-weight:600">${data.currency}</div>
           </div>
         </div>
-
         <table style="margin-top:8px">
           <thead><tr><th style="width:60%">Description</th><th>Qty</th><th>Unit</th><th class="right">Line total</th></tr></thead>
           <tbody>${rowsHtml}</tbody>
         </table>
-
         <div class="totals">
           <div class="line"><div class="muted">Sub total</div><div>${formatMoney(t.sub,data.currency)}</div></div>
           <div class="line"><div class="muted">Tax total</div><div>${formatMoney(t.taxTotal,data.currency)}</div></div>
           <div class="line"><div class="muted">Discount</div><div>-${formatMoney(t.discount,data.currency)}</div></div>
           <div class="line" style="font-weight:700;font-size:16px"><div>Total</div><div>${formatMoney(t.total,data.currency)}</div></div>
         </div>
-
         <div style="margin-top:12px" class="muted small">${nl2br(escapeHtml(data.notes))}</div>
       `;
     }
@@ -262,63 +235,15 @@ Email: fourelementzevents@gmail.com</textarea>
 
     downloadBtn.addEventListener('click', ()=>{
       renderPreview();
-      // prepare a printable element
       const opt = {
-        margin:       10,
-        filename:     `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 10,
+        filename: `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
-      const element = previewDiv.cloneNode(true);
-      // add company header to the top of the element for PDF
-      const header = document.createElement('div'); header.style.marginBottom='12px'; header.innerHTML = `<strong>${escapeHtml(document.getElementById('companyName').value)}</strong><div class="invoice-meta">${nl2br(escapeHtml(document.getElementById('companyAddress').value))}</div>`;
-      element.insertBefore(header, element.firstChild);
-      // show full width
-      element.style.width='800px'; element.style.background='white'; element.style.padding='20px';
-      html2pdf().set(opt).from(element).save();
+      html2pdf().set(opt).from(previewDiv).save();
     });
-
-    saveJSONBtn.addEventListener('click', ()=>{
-      const data = readForm();
-      localStorage.setItem('invoiceData', JSON.stringify(data));
-      alert('Saved to localStorage');
-    });
-    loadJSONBtn.addEventListener('click', ()=>{
-      const raw = localStorage.getItem('invoiceData');
-      if(!raw){ alert('No saved invoice in localStorage'); return; }
-      const data = JSON.parse(raw);
-      document.getElementById('companyName').value = data.companyName || '';
-      document.getElementById('companyAddress').value = data.companyAddress || '';
-      document.getElementById('invoiceNo').value = data.invoiceNo || '';
-      document.getElementById('invoiceDate').value = data.invoiceDate || '';
-      document.getElementById('customerName').value = data.customerName || '';
-      document.getElementById('customerAddress').value = data.customerAddress || '';
-      document.getElementById('notes').value = data.notes || '';
-      document.getElementById('discount').value = data.discount || 0;
-      document.getElementById('currency').value = data.currency || 'LKR';
-      itemsBody.innerHTML='';
-      (data.rows||[]).forEach(r=>createItemRow(r));
-      alert('Loaded from localStorage — click Show preview');
-    });
-
-    resetFormBtn.addEventListener('click', ()=>{
-      if(!confirm('Reset form to defaults?')) return;
-      document.getElementById('companyName').value='EventPlan Co.';
-      document.getElementById('companyAddress').value='No 10, Flower St., Colombo\nPhone: 011-1234567\nEmail: hello@eventplan.example';
-      document.getElementById('invoiceNo').value='INV-001';
-      document.getElementById('invoiceDate').valueAsDate=new Date();
-      document.getElementById('customerName').value='';
-      document.getElementById('customerAddress').value='';
-      document.getElementById('notes').value='Thank you for choosing EventPlan. Please pay within 14 days.';
-      document.getElementById('discount').value=0;
-      itemsBody.innerHTML='';
-      createItemRow({desc:'Venue booking',qty:1,price:45000,tax:0});
-      createItemRow({desc:'Decoration + Setup',qty:1,price:15000,tax:0});
-    });
-
-    // small helper: when user edits table cells, keep preview reactive
-    itemsBody.addEventListener('input', ()=>{/* no-op: the user can click preview to re-render */});
   </script>
 </body>
 </html>
