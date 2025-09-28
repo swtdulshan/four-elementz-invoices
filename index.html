@@ -33,6 +33,7 @@
     .controls{display:flex;gap:8px;flex-wrap:wrap}
     .danger{background:#ef4444}
     footer{margin-top:18px;font-size:13px;color:var(--muted)}
+    #pdfContent { background:white; padding:20px; border-radius:8px; }
     @media (min-width:900px){.grid-2{grid-template-columns:1fr 420px}}
     @media (max-width:899px){.row{flex-direction:column}}
   </style>
@@ -40,7 +41,7 @@
 <body>
   <div class="container">
     <h1>Four Elementz Events — Invoice Generator</h1>
-    <p class="muted">Create an invoice and download it as PDF. Designed for an event planning company — host this single file on GitHub Pages.</p>
+    <p class="muted">Create an invoice and download it as PDF. Designed by Four Elementz Events.</p>
 
     <div class="grid grid-2" style="margin-top:12px;gap:16px">
       <div class="card">
@@ -112,8 +113,10 @@ Email: fourelementzevents@gmail.com</textarea>
       <aside>
         <div class="card">
           <h2 style="margin-top:0">Preview</h2>
-          <div id="preview" class="invoice-preview small">
-            <div style="text-align:center;opacity:0.65">Click "Show preview" to render the invoice here.</div>
+          <div id="pdfContent">
+            <div id="preview" class="invoice-preview small">
+              <div style="text-align:center;opacity:0.65">Click "Show preview" to render the invoice here.</div>
+            </div>
           </div>
         </div>
       </aside>
@@ -130,6 +133,7 @@ Email: fourelementzevents@gmail.com</textarea>
     const previewBtn = document.getElementById('previewBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const previewDiv = document.getElementById('preview');
+    const pdfContent = document.getElementById('pdfContent');
 
     document.getElementById('invoiceDate').valueAsDate = new Date();
 
@@ -188,7 +192,12 @@ Email: fourelementzevents@gmail.com</textarea>
       const rowsHtml = data.rows.map(r=>{
         const line = (r.qty * r.price);
         const taxAmt = (line * (r.tax/100));
-        return `<tr><td>${escapeHtml(r.desc)}</td><td class="right">${r.qty}</td><td class="right">${formatMoney(r.price,data.currency)}</td><td class="right">${formatMoney(line + taxAmt,data.currency)}</td></tr>`;
+        return `<tr>
+          <td>${escapeHtml(r.desc)}</td>
+          <td class="right">${r.qty}</td>
+          <td class="right">${formatMoney(r.price,data.currency)}</td>
+          <td class="right">${formatMoney(line + taxAmt,data.currency)}</td>
+        </tr>`;
       }).join('');
 
       previewDiv.innerHTML = `
@@ -242,7 +251,7 @@ Email: fourelementzevents@gmail.com</textarea>
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
-      html2pdf().set(opt).from(previewDiv).save();
+      html2pdf().set(opt).from(pdfContent).save();
     });
   </script>
 </body>
