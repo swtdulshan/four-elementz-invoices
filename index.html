@@ -25,7 +25,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      table-layout: fixed; /* important for PDF */
+      table-layout: fixed;
     }
 
     table, th, td {
@@ -35,10 +35,9 @@
     th, td {
       padding: 6px;
       text-align: left;
-      word-wrap: break-word; /* ensures text won’t disappear */
+      word-wrap: break-word;
     }
 
-    /* Column widths */
     th:nth-child(1), td:nth-child(1) { width: 50%; }  /* Description */
     th:nth-child(2), td:nth-child(2) { width: 15%; }  /* Qty */
     th:nth-child(3), td:nth-child(3) { width: 15%; }  /* Unit Price */
@@ -116,25 +115,31 @@ Email: info@fourelementzevents.com</textarea>
       desc.innerHTML = `<input type="text" placeholder="Description">`;
       qty.innerHTML = `<input type="number" value="1" min="1">`;
       price.innerHTML = `<input type="number" value="0" min="0">`;
-      total.innerHTML = `0`;
+      total.innerHTML = `0.00`;
 
       row.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateTotals);
+        input.addEventListener('input', () => {
+          updateTotals();
+          renderPreview();
+        });
       });
     }
 
     function updateTotals() {
+      let grandTotal = 0;
       for (let i = 1; i < itemsTable.rows.length; i++) {
         const row = itemsTable.rows[i];
-        const qty = row.cells[1].querySelector('input').value || 0;
-        const price = row.cells[2].querySelector('input').value || 0;
+        const qty = parseFloat(row.cells[1].querySelector('input').value) || 0;
+        const price = parseFloat(row.cells[2].querySelector('input').value) || 0;
         const total = qty * price;
         row.cells[3].innerText = total.toFixed(2);
+        grandTotal += total;
       }
-      renderPreview();
+      return grandTotal;
     }
 
     function renderPreview() {
+      const grandTotal = updateTotals();
       let html = `
         <h2>${document.getElementById('companyName').value}</h2>
         <p>${document.getElementById('companyAddress').value.replace(/\n/g, '<br>')}</p>
@@ -149,8 +154,7 @@ Email: info@fourelementzevents.com</textarea>
             <th>Unit Price</th>
             <th>Total</th>
           </tr>`;
-      
-      let grandTotal = 0;
+
       for (let i = 1; i < itemsTable.rows.length; i++) {
         const row = itemsTable.rows[i];
         const desc = row.cells[0].querySelector('input').value;
@@ -163,7 +167,6 @@ Email: info@fourelementzevents.com</textarea>
                   <td>${price}</td>
                   <td>${total}</td>
                  </tr>`;
-        grandTotal += parseFloat(total);
       }
 
       html += `<tr>
@@ -174,7 +177,8 @@ Email: info@fourelementzevents.com</textarea>
     }
 
     downloadBtn.addEventListener('click', () => {
-      renderPreview(); // ensure preview is up-to-date
+      updateTotals(); // recalc totals before PDF
+      renderPreview(); // refresh preview
       const opt = {
         margin: 10,
         filename: `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
