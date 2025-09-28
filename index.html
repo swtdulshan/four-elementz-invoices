@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head> 
+<head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Four Elementz Events — Invoice Generator Thanula</title>
@@ -18,7 +18,7 @@
     .flex{display:flex;gap:12px;align-items:center}
     .spacer{flex:1}
     table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border-bottom:1px solid #eef2f7;font-size:14px}
+    th,td{padding:6px;border-bottom:1px solid #eef2f7;font-size:13px}
     th{background:#f1f5f9;text-align:left}
     .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
     .btn.ghost{background:transparent;color:var(--accent);border:1px solid #cfe3ff}
@@ -33,7 +33,7 @@
     .controls{display:flex;gap:8px;flex-wrap:wrap}
     .danger{background:#ef4444}
     footer{margin-top:18px;font-size:13px;color:var(--muted)}
-    #pdfContent { background:white; padding:20px; border-radius:8px; }
+    #pdfContent { background:white; padding:20px; border-radius:8px; width:100%; box-sizing:border-box; }
     @media (min-width:900px){.grid-2{grid-template-columns:1fr 420px}}
     @media (max-width:899px){.row{flex-direction:column}}
   </style>
@@ -106,7 +106,7 @@ Email: fourelementzevents@gmail.com</textarea>
         </div>
 
         <footer>
-          <strong>Note:</strong> This file is ready to host on GitHub Pages — upload as <code>index.html</code> to a repo and enable Pages.
+          <strong>Note:</strong> Upload as <code>index.html</code> to a repo and enable GitHub Pages.
         </footer>
       </div>
 
@@ -248,7 +248,7 @@ Email: fourelementzevents@gmail.com</textarea>
         margin: 10,
         filename: `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, scrollY: 0 }, // ensures all content is captured
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(pdfContent).save();
