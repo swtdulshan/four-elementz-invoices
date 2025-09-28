@@ -1,180 +1,240 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Invoice Generator - Four Elementz Events</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Four Elementz Events — Invoice Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-
-    h2, h3 {
-      margin: 5px 0;
-    }
-
-    input, textarea, button {
-      margin: 5px 0;
-      padding: 6px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      table-layout: fixed; /* important for PDF */
-    }
-
-    table, th, td {
-      border: 1px solid #000;
-    }
-
-    th, td {
-      padding: 6px;
-      text-align: left;
-      word-wrap: break-word; /* ensures text won’t disappear */
-    }
-
-    /* Column widths */
-    th:nth-child(1), td:nth-child(1) { width: 50%; }  /* Description */
-    th:nth-child(2), td:nth-child(2) { width: 15%; }  /* Qty */
-    th:nth-child(3), td:nth-child(3) { width: 15%; }  /* Unit Price */
-    th:nth-child(4), td:nth-child(4) { width: 20%; }  /* Total */
-
-    #invoicePreview {
-      border: 2px solid #000;
-      padding: 15px;
-      margin-top: 20px;
-      background: #fff;
-    }
-
-    #downloadBtn {
-      margin-top: 20px;
-      padding: 10px 15px;
-      background: #333;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-
-    #downloadBtn:hover {
-      background: #555;
-    }
+    :root{--accent:#2b6cb0;--muted:#6b7280}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:#111;margin:0;padding:24px;background:#f7fafc}
+    .container{max-width:1000px;margin:0 auto}
+    h1{margin:0 0 12px;font-size:20px}
+    .grid{display:grid;gap:12px}
+    .row{display:flex;gap:12px}
+    input,select,textarea{padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:14px}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .card{background:white;padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(7,10,20,0.06)}
+    .flex{display:flex;gap:12px;align-items:center}
+    .spacer{flex:1}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #eef2f7;font-size:14px}
+    th{background:#f1f5f9;text-align:left}
+    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid #cfe3ff}
+    .muted{color:var(--muted)}
+    .invoice-preview{background:white;padding:20px;border-radius:8px}
+    .invoice-head{display:flex;justify-content:space-between;align-items:flex-start}
+    .invoice-meta{font-size:13px;color:var(--muted)}
+    .right{text-align:right}
+    .totals{margin-top:12px}
+    .totals .line{display:flex;justify-content:space-between;padding:6px 0}
+    .small{font-size:13px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    .danger{background:#ef4444}
+    footer{margin-top:18px;font-size:13px;color:var(--muted)}
+    @media (min-width:900px){.grid-2{grid-template-columns:1fr 420px}}
+    @media (max-width:899px){.row{flex-direction:column}}
   </style>
 </head>
 <body>
-  <h2>Invoice Generator - Four Elementz Events</h2>
+  <div class="container">
+    <h1>Four Elementz Events — Invoice Generator</h1>
+    <p class="muted">Create an invoice and download it as PDF. Designed for an event planning company — host this single file on GitHub Pages.</p>
 
-  <label>Company Name:</label>
-  <input id="companyName" value="Four Elementz Events">
+    <div class="grid grid-2" style="margin-top:12px;gap:16px">
+      <div class="card">
+        <h2 style="margin-top:0">Invoice details</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:180px">
+            <label>Company name</label>
+            <input id="companyName" value="Four Elementz Events" />
+          </div>
+          <div style="min-width:140px">
+            <label>Invoice #</label>
+            <input id="invoiceNo" value="INV-001" />
+          </div>
+          <div style="min-width:160px">
+            <label>Date</label>
+            <input id="invoiceDate" type="date" />
+          </div>
+        </div>
 
-  <label>Company Address:</label>
-  <textarea id="companyAddress" rows="3">No. 10, Event Street, Colombo
-Phone: 011-1234567
-Email: info@fourelementzevents.com</textarea>
+        <div class="row" style="margin-top:12px">
+          <div style="flex:1">
+            <label>Bill to (Customer)</label>
+            <input id="customerName" placeholder="Customer name" />
+            <textarea id="customerAddress" rows="3" placeholder="Customer address" style="margin-top:6px"></textarea>
+          </div>
 
-  <label>Customer Name:</label>
-  <input id="customerName" placeholder="Enter customer name">
+          <div style="width:220px">
+            <label>Company Address</label>
+            <textarea id="companyAddress" rows="3">Pannipitiya, Colombo
+Phone: 0712871830
+Email: fourelementzevents@gmail.com</textarea>
+          </div>
+        </div>
 
-  <label>Invoice Number:</label>
-  <input id="invoiceNo" placeholder="INV001">
+        <div style="margin-top:12px">
+          <label>Notes (appears on invoice)</label>
+          <textarea id="notes" rows="3">Thank you for choosing Four Elementz Events. Please pay within 14 days.</textarea>
+        </div>
 
-  <label>Date:</label>
-  <input id="invoiceDate" type="date">
+        <section style="margin-top:12px">
+          <h3 style="margin:0 0 8px">Items</h3>
+          <table id="itemsTable">
+            <thead>
+              <tr><th style="width:44%">Description</th><th style="width:14%">Qty</th><th style="width:18%">Unit price</th><th style="width:16%">Tax (%)</th><th style="width:8%"></th></tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button id="addItem" class="btn">+ Add item</button>
+            <button id="clearItems" class="btn ghost">Clear items</button>
+          </div>
+        </section>
 
-  <h3>Invoice Items</h3>
-  <table id="itemsTable">
-    <tr>
-      <th>Description</th>
-      <th>Qty</th>
-      <th>Unit Price</th>
-      <th>Total</th>
-    </tr>
-  </table>
-  <button onclick="addItem()">Add Item</button>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <label style="margin:0">Discount (fixed)</label>
+          <input id="discount" type="number" value="0" style="width:120px" />
+          <label style="margin:0">Currency</label>
+          <select id="currency"><option value="LKR">LKR</option><option value="USD">USD</option><option value="EUR">EUR</option></select>
+          <div class="spacer"></div>
+          <button id="previewBtn" class="btn">Show preview</button>
+          <button id="downloadBtn" class="btn">Download PDF</button>
+        </div>
 
-  <h3>Preview</h3>
-  <div id="invoicePreview"></div>
+        <footer>
+          <strong>Note:</strong> This file is ready to host on GitHub Pages — upload as <code>index.html</code> to a repo and enable Pages.
+        </footer>
+      </div>
 
-  <button id="downloadBtn">Download PDF</button>
+      <aside>
+        <div class="card">
+          <h2 style="margin-top:0">Preview</h2>
+          <div id="preview" class="invoice-preview small">
+            <div style="text-align:center;opacity:0.65">Click "Show preview" to render the invoice here.</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <script>
-    const itemsTable = document.getElementById('itemsTable');
-    const previewDiv = document.getElementById('invoicePreview');
+    const itemsBody = document.getElementById('itemsBody');
+    const addItemBtn = document.getElementById('addItem');
+    const clearItemsBtn = document.getElementById('clearItems');
+    const previewBtn = document.getElementById('previewBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const previewDiv = document.getElementById('preview');
 
-    function addItem() {
-      const row = itemsTable.insertRow(-1);
-      const desc = row.insertCell(0);
-      const qty = row.insertCell(1);
-      const price = row.insertCell(2);
-      const total = row.insertCell(3);
+    document.getElementById('invoiceDate').valueAsDate = new Date();
 
-      desc.innerHTML = `<input type="text" placeholder="Description">`;
-      qty.innerHTML = `<input type="number" value="1" min="1">`;
-      price.innerHTML = `<input type="number" value="0" min="0">`;
-      total.innerHTML = `0`;
-
-      row.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateTotals);
-      });
+    function createItemRow(item={desc:'Setup fee', qty:1, price:5000, tax:0}){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input class="desc" value="${escapeHtml(item.desc)}" style="width:100%" /></td>
+        <td><input class="qty" type="number" min="0" value="${item.qty}" style="width:80px" /></td>
+        <td><input class="price" type="number" min="0" value="${item.price}" style="width:120px" /></td>
+        <td><input class="tax" type="number" min="0" value="${item.tax}" style="width:80px" /></td>
+        <td><button class="btn ghost remove">x</button></td>
+      `;
+      tr.querySelector('.remove').addEventListener('click', ()=>tr.remove());
+      itemsBody.appendChild(tr);
     }
 
-    function updateTotals() {
-      for (let i = 1; i < itemsTable.rows.length; i++) {
-        const row = itemsTable.rows[i];
-        const qty = row.cells[1].querySelector('input').value || 0;
-        const price = row.cells[2].querySelector('input').value || 0;
-        const total = qty * price;
-        row.cells[3].innerText = total.toFixed(2);
-      }
+    function escapeHtml(s){return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+    addItemBtn.addEventListener('click', ()=>createItemRow({desc:'',qty:1,price:0,tax:0}));
+    clearItemsBtn.addEventListener('click', ()=>{itemsBody.innerHTML='';});
+
+    createItemRow({desc:'Venue booking',qty:1,price:45000,tax:0});
+    createItemRow({desc:'Decoration + Setup',qty:1,price:15000,tax:0});
+
+    function readForm(){
+      return {
+        companyName: document.getElementById('companyName').value,
+        companyAddress: document.getElementById('companyAddress').value,
+        invoiceNo: document.getElementById('invoiceNo').value,
+        invoiceDate: document.getElementById('invoiceDate').value,
+        customerName: document.getElementById('customerName').value,
+        customerAddress: document.getElementById('customerAddress').value,
+        notes: document.getElementById('notes').value,
+        discount: parseFloat(document.getElementById('discount').value)||0,
+        currency: document.getElementById('currency').value,
+        rows: Array.from(itemsBody.querySelectorAll('tr')).map(tr=>({
+          desc: tr.querySelector('.desc').value,
+          qty: parseFloat(tr.querySelector('.qty').value)||0,
+          price: parseFloat(tr.querySelector('.price').value)||0,
+          tax: parseFloat(tr.querySelector('.tax').value)||0,
+        }))
+      };
+    }
+
+    function calcTotals(rows,discount){
+      let sub=0;let taxTotal=0;
+      rows.forEach(r=>{const line = r.qty * r.price; sub += line; taxTotal += line * (r.tax/100);});
+      const total = sub + taxTotal - discount;
+      return {sub, taxTotal, discount, total};
+    }
+
+    function renderPreview(){
+      const data = readForm();
+      const t = calcTotals(data.rows,data.discount);
+
+      const rowsHtml = data.rows.map(r=>{
+        const line = (r.qty * r.price);
+        const taxAmt = (line * (r.tax/100));
+        return `<tr><td>${escapeHtml(r.desc)}</td><td class="right">${r.qty}</td><td class="right">${formatMoney(r.price,data.currency)}</td><td class="right">${formatMoney(line + taxAmt,data.currency)}</td></tr>`;
+      }).join('');
+
+      previewDiv.innerHTML = `
+        <div class="invoice-head">
+          <div>
+            <strong style="font-size:18px">${escapeHtml(data.companyName)}</strong>
+            <div class="invoice-meta">${nl2br(escapeHtml(data.companyAddress))}</div>
+          </div>
+          <div class="right">
+            <div style="font-weight:600">Invoice</div>
+            <div class="invoice-meta">No: ${escapeHtml(data.invoiceNo)}<br/>Date: ${escapeHtml(data.invoiceDate)}</div>
+          </div>
+        </div>
+        <hr style="margin:12px 0"/>
+        <div style="display:flex;justify-content:space-between;padding:6px 0">
+          <div>
+            <div class="small muted">Bill to</div>
+            <div style="font-weight:600">${escapeHtml(data.customerName)}</div>
+            <div class="invoice-meta">${nl2br(escapeHtml(data.customerAddress))}</div>
+          </div>
+          <div class="right">
+            <div class="small muted">Currency</div>
+            <div style="font-weight:600">${data.currency}</div>
+          </div>
+        </div>
+        <table style="margin-top:8px">
+          <thead><tr><th style="width:60%">Description</th><th>Qty</th><th>Unit</th><th class="right">Line total</th></tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+        <div class="totals">
+          <div class="line"><div class="muted">Sub total</div><div>${formatMoney(t.sub,data.currency)}</div></div>
+          <div class="line"><div class="muted">Tax total</div><div>${formatMoney(t.taxTotal,data.currency)}</div></div>
+          <div class="line"><div class="muted">Discount</div><div>-${formatMoney(t.discount,data.currency)}</div></div>
+          <div class="line" style="font-weight:700;font-size:16px"><div>Total</div><div>${formatMoney(t.total,data.currency)}</div></div>
+        </div>
+        <div style="margin-top:12px" class="muted small">${nl2br(escapeHtml(data.notes))}</div>
+      `;
+    }
+
+    function nl2br(s){return s.replace(/\n/g,'<br/>');}
+    function formatMoney(v,cur){return new Intl.NumberFormat(undefined,{maximumFractionDigits:2}).format(v) + ' ' + cur}
+
+    previewBtn.addEventListener('click', ()=>renderPreview());
+
+    downloadBtn.addEventListener('click', ()=>{
       renderPreview();
-    }
-
-    function renderPreview() {
-      let html = `
-        <h2>${document.getElementById('companyName').value}</h2>
-        <p>${document.getElementById('companyAddress').value.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <p><strong>Bill To:</strong> ${document.getElementById('customerName').value}</p>
-        <p><strong>Invoice No:</strong> ${document.getElementById('invoiceNo').value}</p>
-        <p><strong>Date:</strong> ${document.getElementById('invoiceDate').value}</p>
-        <table>
-          <tr>
-            <th>Description</th>
-            <th>Qty</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-          </tr>`;
-      
-      let grandTotal = 0;
-      for (let i = 1; i < itemsTable.rows.length; i++) {
-        const row = itemsTable.rows[i];
-        const desc = row.cells[0].querySelector('input').value;
-        const qty = row.cells[1].querySelector('input').value;
-        const price = row.cells[2].querySelector('input').value;
-        const total = row.cells[3].innerText;
-        html += `<tr>
-                  <td>${desc}</td>
-                  <td>${qty}</td>
-                  <td>${price}</td>
-                  <td>${total}</td>
-                 </tr>`;
-        grandTotal += parseFloat(total);
-      }
-
-      html += `<tr>
-                <td colspan="3"><strong>Grand Total</strong></td>
-                <td><strong>${grandTotal.toFixed(2)}</strong></td>
-               </tr></table>`;
-      previewDiv.innerHTML = html;
-    }
-
-    downloadBtn.addEventListener('click', () => {
-      renderPreview(); // ensure preview is up-to-date
       const opt = {
         margin: 10,
         filename: `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
