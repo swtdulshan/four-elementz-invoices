@@ -34,7 +34,6 @@
     .danger{background:#ef4444}
     footer{margin-top:18px;font-size:13px;color:var(--muted)}
     #pdfContent { background:white; padding:20px; border-radius:8px; width:100%; box-sizing:border-box; }
-    .logo{max-width:160px;margin-bottom:12px}
     @media (min-width:900px){.grid-2{grid-template-columns:1fr 420px}}
     @media (max-width:899px){.row{flex-direction:column}}
   </style>
@@ -80,8 +79,8 @@ Email: info@fourelementzevents@gmail.com</textarea>
         <div style="margin-top:12px">
           <label>Notes (appears on invoice)</label>
 <textarea id="notes" rows="3">This is a system-generated invoice. No signature required.
-
-Thank you for choosing Four Elementz Events. Please pay within 14 days.</textarea>
+  
+  Thank you for choosing Four Elementz Events. Please pay within 14 days.</textarea>
         </div>
 
         <section style="margin-top:12px">
@@ -204,9 +203,6 @@ Thank you for choosing Four Elementz Events. Please pay within 14 days.</textare
       }).join('');
 
       previewDiv.innerHTML = `
-        <div style="text-align:center;margin-bottom:10px;">
-          <img src="company_logo.png" alt="Company Logo" class="logo">
-        </div>
         <div class="invoice-head">
           <div>
             <strong style="font-size:18px">${escapeHtml(data.companyName)}</strong>
@@ -254,7 +250,7 @@ Thank you for choosing Four Elementz Events. Please pay within 14 days.</textare
         margin: 10,
         filename: `${document.getElementById('invoiceNo').value || 'invoice'}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, scrollY: 0 },
+        html2canvas: { scale: 2, scrollY: 0 }, // ensures all content is captured
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(pdfContent).save();
